@@ -1,0 +1,21 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+*.egg-info/
+.pytest_cache/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+**/node_modules/
+**/dist/
+
+# Logs
+*.log
+nohup.out
+
+# OS
+.DS_Store

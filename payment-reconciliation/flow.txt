@@ -1,0 +1,18 @@
+1. You click Pay
+   → orders table: order_123 = pending
+
+2. Razorpay takes the money
+   → sends webhook: "payment captured for order_123"
+
+3. Your API receives it
+   → verifies the signature
+   → saves it in webhook_events (status: received)
+   → replies 200 OK
+
+4. Worker picks up the saved event
+   → finds order_123, sets it to paid
+   → marks the event processed          ✅ done
+
+5. If the worker's processing fails 5 times
+   → event stays failed = dead-letter queue
+   → dashboard shows it → you fix the cause → Replay
