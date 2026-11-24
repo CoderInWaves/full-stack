@@ -10,7 +10,7 @@ A small FastAPI service that creates Razorpay orders and reconciles payment stat
 4. The worker updates the order for `payment.captured` or `payment.failed` events.
 5. Failed processing is retried; events that reach the retry limit can be inspected and replayed through the API.
 
-The application code and database schema are in [`payment-reconciliation/`](payment-reconciliation/).
+The API, worker, and database schema are in this directory.
 
 ## Requirements
 
@@ -20,7 +20,7 @@ The application code and database schema are in [`payment-reconciliation/`](paym
 
 ## Setup
 
-Open a terminal in the application directory and create a virtual environment:
+From the repository root, open a terminal in the application directory and create a virtual environment:
 
 ```bash
 cd payment-reconciliation
@@ -80,8 +80,8 @@ The events and retry endpoints currently have no authentication. Restrict access
 
 ## Project files
 
-- `payment-reconciliation/app.py` — FastAPI order, webhook, event-listing, and retry endpoints.
-- `payment-reconciliation/worker.py` — background event processor with retry handling.
-- `payment-reconciliation/schema.sql` — PostgreSQL tables and index.
-- `payment-reconciliation/flow.txt` — short processing flow overview.
-- `payment-reconciliation/.env.example` — required environment variable names and sample values.
+- `app.py` — FastAPI order, webhook, event-listing, and retry endpoints.
+- `worker.py` — background event processor with retry handling.
+- `schema.sql` — PostgreSQL tables and index.
+- `flow.txt` — short processing flow overview.
+- `.env.example` — required environment variable names and sample values.
