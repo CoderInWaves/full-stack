@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="1260" viewBox="0 0 1300 1260" role="img" aria-labelledby="title description">
+  <title id="title">How MCP-Guard works</title>
+  <desc id="description">A numbered diagram showing an agent request passing through MCP-Guard to an enterprise MCP server, with allow and deny paths, response inspection, redaction, and audit logging.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M1,1 L11,6 L1,11 Z" fill="#496174"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M1,1 L11,6 L1,11 Z" fill="#23845f"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M1,1 L11,6 L1,11 Z" fill="#bd4b4b"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #183246; }
+      .title { font-size: 34px; font-weight: 700; }
+      .subtitle { font-size: 18px; fill: #526879; }
+      .card-title { font-size: 21px; font-weight: 700; }
+      .card-copy { font-size: 17px; fill: #526879; }
+      .step { font-size: 19px; font-weight: 700; fill: #ffffff; text-anchor: middle; dominant-baseline: central; }
+      .branch { font-size: 16px; font-weight: 700; }
+    </style>
+  </defs>
+
+  <rect width="1300" height="1260" fill="#f3f7fa"/>
+  <text x="64" y="66" class="title">How MCP-Guard works</text>
+  <text x="64" y="101" class="subtitle">Every tool request passes through the Guard before it can reach company systems.</text>
+
+  <!-- Connectors are drawn first so they sit behind the numbered cards. -->
+  <path d="M650 223 L650 253" fill="none" stroke="#496174" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M650 367 L650 398" fill="none" stroke="#496174" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <path d="M500 460 L310 460 L310 572" fill="none" stroke="#bd4b4b" stroke-width="3" marker-end="url(#arrow-red)"/>
+  <text x="390" y="445" class="branch" fill="#a33d3d">NO</text>
+  <path d="M310 700 L310 732" fill="none" stroke="#bd4b4b" stroke-width="3" marker-end="url(#arrow-red)"/>
+
+  <path d="M800 460 L990 460 L990 572" fill="none" stroke="#23845f" stroke-width="3" marker-end="url(#arrow-green)"/>
+  <text x="885" y="445" class="branch" fill="#1e7654">YES</text>
+  <path d="M990 700 L990 732" fill="none" stroke="#23845f" stroke-width="3" marker-end="url(#arrow-green)"/>
+  <path d="M990 860 L990 892" fill="none" stroke="#23845f" stroke-width="3" marker-end="url(#arrow-green)"/>
+  <path d="M990 1020 L990 1040 L650 1040 L650 1052" fill="none" stroke="#23845f" stroke-width="3" marker-end="url(#arrow-green)"/>
+
+  <!-- Shared request path -->
+  <rect x="350" y="135" width="600" height="88" rx="18" fill="#ffffff" stroke="#cbd8e1" stroke-width="2"/>
+  <circle cx="398" cy="179" r="24" fill="#286a88"/>
+  <text x="398" y="179" class="step">1</text>
+  <text x="440" y="174" class="card-title">The agent sends a tool request</text>
+  <text x="440" y="201" class="card-copy">Example: “get customer C001”</text>
+
+  <rect x="220" y="255" width="860" height="112" rx="18" fill="#ffffff" stroke="#cbd8e1" stroke-width="2"/>
+  <circle cx="270" cy="311" r="24" fill="#286a88"/>
+  <text x="270" y="311" class="step">2</text>
+  <text x="312" y="300" class="card-title">MCP-Guard checks the request</text>
+  <text x="312" y="331" class="card-copy">It verifies the agent, checks the YAML permission, and validates the arguments.</text>
+
+  <polygon points="650,398 800,460 650,522 500,460" fill="#e8f0fc" stroke="#6681b5" stroke-width="3"/>
+  <text x="650" y="454" class="card-title" text-anchor="middle">3. Allowed?</text>
+  <text x="650" y="480" class="card-copy" text-anchor="middle">Choose a path</text>
+
+  <!-- Deny branch -->
+  <rect x="45" y="585" width="535" height="115" rx="18" fill="#fff7f6" stroke="#e1aaaa" stroke-width="2"/>
+  <circle cx="92" cy="642" r="24" fill="#bd4b4b"/>
+  <text x="92" y="642" class="step">4A</text>
+  <text x="132" y="631" class="card-title">Guard blocks the request</text>
+  <text x="132" y="662" class="card-copy">It records a DENY event in the audit log.</text>
+
+  <rect x="45" y="745" width="535" height="115" rx="18" fill="#fff7f6" stroke="#e1aaaa" stroke-width="2"/>
+  <circle cx="92" cy="802" r="24" fill="#bd4b4b"/>
+  <text x="92" y="802" class="step">5A</text>
+  <text x="132" y="791" class="card-title">The agent receives an error</text>
+  <text x="132" y="822" class="card-copy">The enterprise MCP server never gets the call.</text>
+
+  <!-- Allow branch -->
+  <rect x="720" y="585" width="535" height="115" rx="18" fill="#f4fbf7" stroke="#a8d2bd" stroke-width="2"/>
+  <circle cx="767" cy="642" r="24" fill="#23845f"/>
+  <text x="767" y="642" class="step">4B</text>
+  <text x="807" y="631" class="card-title">Guard forwards the allowed call</text>
+  <text x="807" y="662" class="card-copy">It sends the request to the enterprise MCP server.</text>
+
+  <rect x="720" y="745" width="535" height="115" rx="18" fill="#ffffff" stroke="#cbd8e1" stroke-width="2"/>
+  <circle cx="767" cy="802" r="24" fill="#23845f"/>
+  <text x="767" y="802" class="step">5B</text>
+  <text x="807" y="791" class="card-title">The server runs the tool</text>
+  <text x="807" y="822" class="card-copy">It uses the company database, API, or files.</text>
+
+  <rect x="720" y="905" width="535" height="115" rx="18" fill="#ffffff" stroke="#cbd8e1" stroke-width="2"/>
+  <circle cx="767" cy="962" r="24" fill="#286a88"/>
+  <text x="767" y="962" class="step">6</text>
+  <text x="807" y="951" class="card-title">The result comes back through Guard</text>
+  <text x="807" y="982" class="card-copy">Guard scans it, redacts configured data, and logs.</text>
+
+  <rect x="350" y="1065" width="600" height="95" rx="18" fill="#eaf5fb" stroke="#9fc5d8" stroke-width="2"/>
+  <circle cx="398" cy="1112" r="24" fill="#286a88"/>
+  <text x="398" y="1112" class="step">7</text>
+  <text x="440" y="1105" class="card-title">The agent receives the checked result</text>
+  <text x="440" y="1132" class="card-copy">For example, an email may arrive redacted.</text>
+
+  <text x="64" y="1215" class="subtitle">The Guard enforces configured rules; it does not decide whether a request is safe based on intent.</text>
+</svg>

@@ -1,0 +1,54 @@
+# MCP-Guard Example Policies
+# Standalone policy file that can be loaded with --policy flag.
+
+policy:
+  default_action: deny
+  agents:
+    support-agent-01:
+      servers:
+        customer_database:
+          enabled: true
+          tools:
+            get_customer:
+              action: allow
+            search_customer:
+              action: allow
+            generate_report:
+              action: allow
+            update_customer:
+              action: approval_required
+            delete_customer:
+              action: deny
+    report-agent-01:
+      servers:
+        analytics_database:
+          enabled: true
+          tools:
+            generate_report:
+              action: allow
+              argument_constraints:
+                schema:
+                  type: object
+                  properties:
+                    report_type:
+                      type: string
+                      enum:
+                        - summary
+                        - detailed
+                  required:
+                    - report_type
+            delete_report:
+              action: deny
+    admin-agent-01:
+      servers:
+        customer_database:
+          enabled: true
+          tools:
+            get_customer:
+              action: allow
+            search_customer:
+              action: allow
+            update_customer:
+              action: allow
+            delete_customer:
+              action: approval_required

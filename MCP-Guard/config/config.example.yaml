@@ -1,0 +1,137 @@
+# MCP-Guard Example Configuration
+# See docs/CONFIGURATION.md for full reference.
+
+mcp_guard:
+  name: MCP-Guard Demo
+  environment: development
+  transport: stdio
+  default_policy: deny
+
+  # STDIO transport configuration
+  stdio:
+    upstream:
+      name: customer_database
+      command:
+        - python3
+        - examples/demo_server.py
+
+  # Agent identity configuration
+  identity:
+    # For STDIO, this is the trusted agent identity
+    agent_id: support-agent-01
+    agents:
+      support_agent:
+        id: support-agent-01
+        name: Customer Support Agent
+        enabled: true
+        servers:
+          - customer_database
+      report_agent:
+        id: report-agent-01
+        name: Report Generator Agent
+        enabled: true
+        servers:
+          - analytics_database
+      admin_agent:
+        id: admin-agent-01
+        name: Admin Agent
+        enabled: true
+        servers:
+          - customer_database
+          - analytics_database
+      disabled_agent:
+        id: disabled-agent-01
+        name: Disabled Agent
+        enabled: false
+        servers:
+          - customer_database
+
+  # Policy configuration
+  policy:
+    default_action: deny
+    agents:
+      support-agent-01:
+        servers:
+          customer_database:
+            enabled: true
+            tools:
+              get_customer:
+                action: allow
+              search_customer:
+                action: allow
+              generate_report:
+                action: allow
+              update_customer:
+                action: approval_required
+              delete_customer:
+                action: deny
+      report-agent-01:
+        servers:
+          analytics_database:
+            enabled: true
+            tools:
+              generate_report:
+                action: allow
+                argument_constraints:
+                  schema:
+                    type: object
+                    properties:
+                      report_type:
+                        type: string
+                        enum:
+                          - summary
+                          - detailed
+                    required:
+                      - report_type
+              delete_report:
+                action: deny
+      admin-agent-01:
+        servers:
+          customer_database:
+            enabled: true
+            tools:
+              get_customer:
+                action: allow
+              search_customer:
+                action: allow
+              update_customer:
+                action: allow
+              delete_customer:
+                action: approval_required
+
+  # Logging configuration
+  logging:
+    format: jsonl
+    level: INFO
+    file: logs/audit.jsonl
+    max_size_mb: 100
+    backup_count: 5
+    log_arguments: false
+    log_responses: false
+
+  # Security configuration
+  security:
+    max_message_size: 1048576
+    request_timeout_seconds: 30
+    enable_dlp: true
+    dlp_patterns:
+      - name: email
+        pattern: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+        mode: redact
+        replacement: "[REDACTED_EMAIL]"
+        enabled: true
+      - name: phone_us
+        pattern: '\b(?:\+1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b'
+        mode: redact
+        replacement: "[REDACTED_PHONE]"
+        enabled: true
+      - name: api_key
+        pattern: '\b(?:sk|pk|api|key|token)[-_][a-zA-Z0-9]{20,}\b'
+        mode: redact
+        replacement: "[REDACTED_API_KEY]"
+        enabled: true
+      - name: bearer_token
+        pattern: 'Bearer\s+[a-zA-Z0-9._~+/=-]{20,}'
+        mode: redact
+        replacement: "[REDACTED_TOKEN]"
+        enabled: true

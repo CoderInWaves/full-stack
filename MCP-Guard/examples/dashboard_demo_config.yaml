@@ -1,0 +1,64 @@
+# LOCAL DEVELOPMENT ONLY. The sample bearer tokens are public in this file.
+# Do not expose this gateway to a network or reuse these credentials.
+mcp_guard:
+  name: MCP-Guard Dashboard Demo
+  environment: development
+  transport: http
+  default_policy: deny
+
+  http:
+    host: 127.0.0.1
+    port: 8080
+    upstream_url: http://127.0.0.1:9000/mcp
+    allowed_origins: []
+    upstream_headers: {}
+
+  upstreams:
+    customer_database:
+      name: customer_database
+      url: http://127.0.0.1:9000/mcp
+
+  identity:
+    agents:
+      support_agent:
+        id: support-agent-01
+        name: Local Dashboard Demo Agent
+        enabled: true
+        servers: [customer_database]
+        api_key_hash: "sha256:42ee490b296f7afc2032ae124a2d77e4dff20b5c20bfe20f00f72968b77a3b7f"
+    admin_credentials:
+      local_operator:
+        id: local-operator
+        api_key_hash: "sha256:ea21c37a5f9086c0ee4ee997c5865bcdd300f2285e3d0828fe6d79d86e798f15"
+        enabled: true
+        roles: [admin]
+
+  policy:
+    default_action: deny
+    agents:
+      support-agent-01:
+        servers:
+          customer_database:
+            enabled: true
+            tools:
+              get_customer:
+                action: allow
+              update_customer:
+                action: approval_required
+              delete_customer:
+                action: deny
+
+  logging:
+    format: jsonl
+    level: INFO
+    file: logs/dashboard-demo-audit.jsonl
+    max_size_mb: 10
+    backup_count: 2
+    log_arguments: false
+    log_responses: false
+
+  security:
+    max_message_size: 1048576
+    request_timeout_seconds: 10
+    approval_timeout_seconds: 900
+    enable_dlp: true
