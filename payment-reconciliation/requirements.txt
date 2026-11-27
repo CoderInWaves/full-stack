@@ -1,6 +1,0 @@
-fastapi
-uvicorn
-asyncpg
-razorpay
-python-dotenv
-setuptools
